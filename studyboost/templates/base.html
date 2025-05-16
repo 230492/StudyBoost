@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>
+        {% block title %}
+        Title
+        {% endblock title %}
+    </title>
+</head>
+<body>
+
+<div class="container">
+    <header>
+
+        <nav class="navbar navbar-expand-lg" style="background-color: #2D84D5;">
+            <a class="navbar-brand text-white" href="#">StudyBoost</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link text-white" href="#">Study Plan<span class="sr-only">(current)</span></a>
+                    </li>
+
+                </ul>
+
+                <div class="navbar-nav d-flex">
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Start your Study Plan
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-warning" href="#">My page</a>
+                            <a class="dropdown-item text-warning" href="#">Create flashcards</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-warning" href="{% url 'logout' %}">Log out</a>
+                        </div>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link text-white" href="{% url 'login' %}">Log in<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'signup' %}">Sign in</a>
+                    </li>
+
+                </div>
+
+
+            </div>
+        </nav>
+
+    </header>
+
+    <main>
+        <h2 class="carousel-title mt-5">Choose Your Study Method!</h2>
+
+
+        <div id="cardCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-around">
+                        <div class="card" style="width: 20rem; height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Create Flashcards</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 20rem;  height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Set Study Goals</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 20rem;  height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Join Study Groups</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="d-flex justify-content-around">
+                        <div class="card" style="width: 20rem;  height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">LeaderBoard</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 20rem;  height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Time your Study Sessions</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                        <div class="card" style="width: 20rem; height: 22rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">Learning sources</h5>
+                                <p class="card-text">Description.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#cardCarousel" data-bs-slide="prev"
+                    style="width: 60px; height: 60px; top: 50%; transform: translateY(-50%);">
+                    <span class="carousel-control-prev-icon" style="width: 15px; height: 15px;"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#cardCarousel" data-bs-slide="next"
+                    style="width: 60px; height: 60px; top: 50%; transform: translateY(-50%);">
+                <span class="carousel-control-next-icon" style="width: 15px; height: 15px;"></span>
+            </button>
+
+        </div>
+
+
+    </main>
+</div>
+<h2 class="timer-title mt-5">Time your Study Time to track your Effectivity!</h2>
+<button id="timerBtn">Start Timer</button>
+<p id="timerDisplay">Time: 0s</p>
+
+<script>
+    let time = 0;
+    let timer; // Stores the interval
+    let timerBtn = document.getElementById("timerBtn");
+
+    timerBtn.addEventListener("click", function() {
+        if (!timer) {  // Start timer if not running
+            timer = setInterval(function() {
+                time++;
+                document.getElementById("timerDisplay").textContent = "Time: " + time + "s";
+            }, 1000);
+            timerBtn.textContent = "Stop Timer"; // Change button text
+        } else {  // Stop timer if running
+            clearInterval(timer);
+            timer = null;
+            timerBtn.textContent = "Start Timer"; // Reset button text
+        }
+    });
+</script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+</html>

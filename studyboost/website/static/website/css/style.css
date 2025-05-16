@@ -1,0 +1,84 @@
+.carousel-control-prev,
+.carousel-control-next {
+    background-color: #2D84D5; /* Semi-transparent black */
+    border-radius: 50%; /* Optional: Makes them circular */
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background-color: #005EB6; /* Blue when hovered */
+}
+
+
+.card {
+    border-radius: 17px; /* Adjust the value to control roundness */
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    transform-style: preserve-3d;
+    flex-shrink: 0;
+    overflow: hidden; /* Keeps content clipped */
+    border: 4px solid transparent; /* default border */
+}
+
+  
+.card:hover {
+    box-shadow: 0 0 12px rgba(0, 123, 255, 0.4); /* blue-ish glow */
+    border-color: #2D84D5; /* subtle blue border */
+}
+  
+.carousel-title {
+    font-family: 'Clickuper', cursive;
+    text-align: center; /* Centers the text */
+    display: block; /* Ensures proper alignment */
+    margin: 20px auto; /* Adds spacing and centers */
+    font-size: 4rem; /* Adjust size */
+    color: #2D84D5; /* Warm golden color */
+    width: 100%; /* Ensures it spans across */
+}
+
+
+
+#timerDisplay {
+    text-align: center; /* Centers text */
+    display: block;
+    font-size: 3rem; /* Makes it bigger */
+    margin: 20px auto; /* Centers and adds spacing */
+    font-weight: bold; /* Makes text stand out */
+    color: #2D84D5; /* Warm golden color */
+}
+
+#timerBtn {
+    display: block;
+    margin: 20px auto;
+    font-size: 1.5rem; /* Makes button bigger */
+    padding: 10px 20px; /* Adds spacing inside button */
+    background-color: #2D84D5;
+}
+
+.timer-title {
+
+    text-align: center; /* Centers the text */
+    display: block; /* Ensures proper alignment */
+    margin: 30px auto; /* Adds spacing and centers */
+    font-size: 2.5rem; /* Adjust size */
+    color: #000000; /* Warm golden color */
+    width: 100%; /* Ensures it spans across */
+}
+
+.custom-navbar {
+    background-color: #ff8800; /* Replace with your desired color */
+}
+
+.card-title {
+    font-size: 20px;
+}
+
+#timerDisplay {
+    font-family: 'Clickuper';
+    font-size: 5rem;
+}  
+
+.custom-btn {
+    background-color: #2D84D5;
+    color: white;
+    border: none;
+}

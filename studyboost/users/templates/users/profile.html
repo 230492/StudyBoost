@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}?v=1.0">
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <title>
+        {% block title %}
+            User Login
+        {% endblock title %}
+    </title>
+</head>
+<body>
+
+<div class="container">
+    <header>
+
+        <nav class="navbar navbar-expand-lg" style="background-color: #2D84D5;">
+            <a class="navbar-brand text-white" href="{% url 'website:main_page' %}">StudyBoost</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    
+
+                </ul>
+
+                <div class="navbar-nav d-flex">
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Start your Study Plan
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-warning" href="#">My page</a>
+                            <a class="dropdown-item text-warning" href="http://127.0.0.1:8000/flashcards/">Create flashcards</a>
+                            <div class="dropdown-divider"></div>
+                            <!--<a class="dropdown-item text-warning" href="#">Log out</a>-->
+                            <form class="dropdown-item p-0 m-0" action="{% url 'users:logout' %}" method="post">
+                              {% csrf_token %}
+                              <button type="submit" class="dropdown-item text-warning bg-transparent border-0 ps-3 w-100 text-start">
+                                Log out
+                              </button>
+                            </form>
+                            
+                        </div>
+                    </li>
+                    {% if user.is_authenticated == 0 %}
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="{% url 'users:login' %}">Log in<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="http://127.0.0.1:8000/users/register/">Sign in</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'users:profile' %}">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    </li>
+                    
+                </div>
+
+
+            </div>
+        </nav>
+
+    </header>
+    <main>
+        <section style="background-color: #eee;">
+            <div class="container py-5">
+              <div class="row">
+                <!-- Sidebar: User Info -->
+                <div class="col-lg-4">
+                    <!-- User Info Card -->
+                    <div class="card mb-4">
+                      <div class="card-body text-center">
+                        <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+                          class="rounded-circle img-fluid" style="width: 150px;">
+                        <h5 class="my-3"><strong>Username:</strong> {{ user.username }}</h5>
+                        <p class="text-muted mb-4">Email: {{ user.email }}</p>
+                        <p class="text-muted mb-1">{{ user.userprofile.study_place }}</p>
+                        <p class="text-muted mb-1">{{ user.userprofile.study_field }}</p>
+                        <p class="text-muted mb-1">
+                          {% if user.userprofile.study_year == 1 %}Freshmen
+                          {% elif user.userprofile.study_year == 2 %}Sophomore
+                          {% elif user.userprofile.study_year == 3 %}Junior
+                          {% elif user.userprofile.study_year == 4 %}Senior
+                          {% else %}N/A
+                          {% endif %}
+                        </p>
+                      </div>
+                    </div>
+                  
+                    <!-- Points & Leaderboard Card -->
+                    <div class="card mb-4">
+                      <div class="card-body text-center">
+                        <h5 class="mb-2">Points: {{ user.userprofile.points }}</h5>
+                        <a href="{% url 'users:leaderboard' %}" class="btn btn-outline-primary btn-sm">Access Leaderboard</a>
+                      </div>
+                    </div>
+                  </div>
+                  
+          
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                  <!-- User Questions -->
+                  <div class="card mb-4">
+                    <div class="card-body">
+                      <h4 class="mb-3">Your Questions</h4>
+                      {% for question in user_questions %}
+                        <div class="mb-3">
+                          <h5><a href="{% url 'users:question_detail' question.id %}" class="text-decoration-none">{{ question.title }}</a></h5>
+                          <p class="text-muted">{{ question.description|truncatewords:20 }}</p>
+                        </div>
+                      {% empty %}
+                        <p>You haven't asked any questions yet.</p>
+                      {% endfor %}
+                    </div>
+                  </div>
+          
+                  <!-- Goals and Flashcards -->
+                  <div class="row">
+                    <!-- Goals -->
+                    <div class="col-md-6">
+                      <div class="card mb-4">
+                        <div class="card-body">
+                          <h5 class="mb-3">Your Goals</h5>
+                          <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Project for Database</li>
+                            <li class="list-group-item">Exam Prep</li>
+                            <li class="list-group-item">Assignment 2</li>
+                            <li class="list-group-item">Assignemtn 1</li>
+                            <li class="list-group-item">Lab Work</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+          
+                    <!-- Flashcards -->
+                    <div class="col-md-6">
+                      <div class="card mb-4">
+                        <div class="card-body">
+                          <h5 class="mb-3">Your Flashcards</h5>
+                          <ul class="list-group list-group-flush">
+                            <a href="http://127.0.0.1:8000/flashcards/biology/" class="list-group-item">biology - Biology Exam Questions</a>
+                            <a href="http://127.0.0.1:8000/flashcards/neural-network/" class="list-group-item">Neural Network</a>
+                            <a href="http://127.0.0.1:8000/flashcards/history-of-agriculture/" class="list-group-item">History of Agriculture</a>
+                            <a href="http://127.0.0.1:8000/flashcards/french-food/" class="list-group-item">Food in French</a>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div> <!-- End Goals & Flashcards Row -->
+                </div>
+              </div>
+            </div>
+          </section>
+          
+    
+    </main>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+</body>
+</html>

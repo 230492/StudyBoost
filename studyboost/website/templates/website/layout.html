@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}
+        Layout
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <nav class="navbar navbar-expand-lg" style="background-color: #2D84D5;">
+          <a class="navbar-brand text-white" href="#">StudyBoost</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+
+          <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item active">
+                <a class="nav-link text-white" href="#">Study Plan<span class="sr-only">(current)</span></a>
+              </li>
+            </ul>
+
+            <div class="navbar-nav d-flex">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Start your Study Plan</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item text-warning" href="#">My page</a>
+                  <a class="dropdown-item text-warning" href="#">Create flashcards</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item text-warning" href="#">Log out</a>
+                </div>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link text-white" href="#">Log in<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link text-white" href="#">Sign in</a>
+              </li>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        {% block content %}
+
+        {% endblock %}
+      </main>
+    </div>
+    <h2 class="timer-title mt-5">Time your Study Time to track your Effectivity!</h2>
+    <button id="timerBtn">Start Timer</button>
+    <p id="timerDisplay">Time: 0s</p>
+
+    <script>
+      let time = 0
+      let timer // Stores the interval
+      let timerBtn = document.getElementById('timerBtn')
+      
+      timerBtn.addEventListener('click', function () {
+        if (!timer) {
+          // Start timer if not running
+          timer = setInterval(function () {
+            time++
+            document.getElementById('timerDisplay').textContent = 'Time: ' + time + 's'
+          }, 1000)
+          timerBtn.textContent = 'Stop Timer' // Change button text
+        } else {
+          // Stop timer if running
+          clearInterval(timer)
+          timer = null
+          timerBtn.textContent = 'Start Timer' // Reset button text
+        }
+      })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  </body>
+</html>

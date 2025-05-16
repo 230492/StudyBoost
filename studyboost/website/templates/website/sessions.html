@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'website/css/style.css' %}" />
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+    <title>
+      {% block title %}
+        Sessions
+      {% endblock %}
+    </title>
+    
+  </head>
+  <body>
+    <div class="container">
+      <header>
+
+        <nav class="navbar navbar-expand-lg" style="background-color: #2D84D5;">
+            <a class="navbar-brand text-white" href="{% url 'website:main_page' %}">StudyBoost</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+
+            <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    
+
+                </ul>
+
+                <div class="navbar-nav d-flex">
+
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Start your Study Plan
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-warning" href="#">My page</a>
+                            <a class="dropdown-item text-warning" href="http://127.0.0.1:8000/flashcards/">Create flashcards</a>
+                            <div class="dropdown-divider"></div>
+                            <!--<a class="dropdown-item text-warning" href="#">Log out</a>-->
+                            <form class="dropdown-item p-0 m-0" action="{% url 'users:logout' %}" method="post">
+                              {% csrf_token %}
+                              <button type="submit" class="dropdown-item text-warning bg-transparent border-0 ps-3 w-100 text-start">
+                                Log out
+                              </button>
+                            </form>
+                            
+                            
+                        </div>
+                    </li>
+                    {% if user.is_authenticated == 0 %}
+                        <li class="nav-item active">
+                            <a class="nav-link text-white" href="{% url 'users:login' %}">Log in<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="http://127.0.0.1:8000/users/register/">Sign in</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'users:profile' %}">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                    </li>
+                    
+                </div>
+
+
+            </div>
+        </nav>
+
+      </header>
+
+      <main>
+        <div class="container my-5">
+
+          <div class="text-center">
+            <h1 class="h2 font-semibold text-gray-800 mb-4">CHOOSE GOAL</h1>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+              <!-- Add Goal Form -->
+              <form method="post" class="mb-2">
+                {% csrf_token %}
+                <div class="input-group w-100">
+                  {{ form.title }}
+                  <button type="submit" name="add_goal" class="btn btn-primary">Add Goal</button>
+                </div>
+              </form>
+            </div>
+            <div class="d-flex justify-content-center align-items-center mb-3">
+              <!-- Goal Selection Dropdown -->
+              <form method="post" class="mb-2">
+                {% csrf_token %}
+                <div class="input-group w-100">
+                  <select name="selected_goal_id" class="form-select" aria-label="Select goal">
+                    <option value="">-- Select A Goal --</option>
+                    {% for goal in goals %}
+                      <option value="{{ goal.id }}" {% if selected_goal_id == goal.id|stringformat:"s" %} selected {% endif %}>
+                        {% if goal.is_completed %}
+                          ✅ {{ goal.title }}
+                        {% else %}
+                          🟡 {{ goal.title }}
+                        {% endif %}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  <button type="submit" name="toggle_goal" class="btn btn-outline-success">✔️</button>
+                </div>
+              </form>
+            </div>
+        </div>
+
+          <!-- Main Content -->
+          
+          <div class="row g-4">
+            <!-- LEFT CARD -->
+            <div class="col-md-6">
+              <div class="card shadow h-100">
+                <div class="card-body text-center">
+                  <p id="timerLabel" class="text-muted fw-semibold mb-2">Study Session</p>
+                  <p id="timerDisplay" class="display-1 fw-bold mb-4" contenteditable="true" style="outline: none; cursor: text;">25:00</p>
+                  
+                  <!-- Time Progress Bar -->
+                  <div class="progress" style="height: 6px; background-color: #eee;">
+                    <div id="timeProgress" class="progress-bar bg-primary" role="progressbar" style="width: 100%;"></div>
+                  </div>
+          
+                  <!-- + / - Buttons -->
+                  <div class="d-flex justify-content-center align-items-center mt-3 mb-2" style="gap: 2rem;">
+                    <button id="decreaseTime" class="btn btn-outline-danger btn-lg rounded-circle" style="width: 50px; height: 50px;">−</button>
+                    <button id="increaseTime" class="btn btn-outline-success btn-lg rounded-circle" style="width: 50px; height: 50px;">+</button>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          
+            <!-- RIGHT CARD -->
+            <div class="col-md-6">
+              <div class="card shadow h-100">
+                <div class="card-body text-center">
+                  <!-- Start Button -->
+                  <div class="mb-4">
+                    <button id="timerBtn" class="btn btn-primary btn-xl px-5 py-3 fs-4">Start Timer</button>
+                  </div>
+                
+                  <!-- Cycle With Break -->
+                  <div class="d-flex justify-content-center align-items-center mb-4" style="gap: 1rem;">
+                    <input type="checkbox" id="cycleToggle" style="transform: scale(1.5); margin: 0;">
+                    <label for="cycleToggle" class="fs-5 fw-semibold mb-0">Cycle It With Break</label>
+                  </div>
+                
+                  <!-- Break Time Inputs -->
+                  <div class="d-flex justify-content-center align-items-center">
+                    <input type="number" id="breakMinutes" class="form-control form-control-lg me-2 text-center" placeholder="Break Min" style="width: 140px;">
+                    <span class="fs-4 fw-bold">:</span>
+                    <input type="number" id="breakSeconds" class="form-control form-control-lg ms-2 text-center" placeholder="Sec" style="width: 120px;">
+                  </div>
+                </div>
+                
+
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      
+        <!-- SCRIPT -->
+        <script>
+          let timer;
+          let remainingTime = 1500; // 25 minutes
+          let initialTime = 1500;
+          let onBreak = false;
+        
+          const timerBtn = document.getElementById('timerBtn');
+          const increaseTime = document.getElementById('increaseTime');
+          const decreaseTime = document.getElementById('decreaseTime');
+          const timerDisplay = document.getElementById('timerDisplay');
+          const timeProgress = document.getElementById('timeProgress');
+          const cycleToggle = document.getElementById('cycleToggle');
+          const breakMinutesInput = document.getElementById('breakMinutes');
+          const breakSecondsInput = document.getElementById('breakSeconds');
+          const timerLabel = document.getElementById('timerLabel');
+        
+          function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+          }
+        
+          function updateDisplay() {
+            timerDisplay.textContent = formatTime(remainingTime);
+            const progressPercent = (remainingTime / initialTime) * 100;
+            timeProgress.style.width = `${progressPercent}%`;
+          }
+        
+          increaseTime.addEventListener('click', () => {
+            if (!timer) {
+              remainingTime += 60;
+              initialTime = remainingTime;
+              updateDisplay();
+            }
+          });
+        
+          decreaseTime.addEventListener('click', () => {
+            if (!timer && remainingTime > 60) {
+              remainingTime -= 60;
+              initialTime = remainingTime;
+              updateDisplay();
+            }
+          });
+        
+          timerBtn.addEventListener('click', function () {
+            if (!timer) {
+              timerLabel.textContent = onBreak ? "Break Session" : "Study Session";
+        
+              timer = setInterval(() => {
+                remainingTime--;
+                updateDisplay();
+        
+                if (remainingTime <= 0) {
+                  clearInterval(timer);
+                  timer = null;
+        
+                  if (cycleToggle.checked) {
+                    if (!onBreak) {
+                      const breakMins = parseInt(breakMinutesInput.value) || 0;
+                      const breakSecs = parseInt(breakSecondsInput.value) || 0;
+                      remainingTime = breakMins * 60 + breakSecs;
+                      initialTime = remainingTime;
+                      onBreak = true;
+                      timerLabel.textContent = "Break Session";
+                      alert("Break time starts now!");
+                    } else {
+                      remainingTime = 1500;
+                      initialTime = remainingTime;
+                      onBreak = false;
+                      timerLabel.textContent = "Study Session";
+                      alert("Back to study!");
+                    }
+                    updateDisplay();
+                    timerBtn.click(); // Restart automatically
+                  } else {
+                    timerBtn.textContent = 'Start Timer';
+                    increaseTime.disabled = false;
+                    decreaseTime.disabled = false;
+                    alert('Session complete!');
+                  }
+                }
+              }, 1000);
+        
+              timerBtn.textContent = 'Stop Timer';
+              increaseTime.disabled = true;
+              decreaseTime.disabled = true;
+            } else {
+              clearInterval(timer);
+              timer = null;
+              timerBtn.textContent = 'Start Timer';
+              increaseTime.disabled = false;
+              decreaseTime.disabled = false;
+            }
+          });
+        
+          timerDisplay.addEventListener('blur', () => {
+            const parts = timerDisplay.textContent.trim().split(':');
+            if (parts.length === 2) {
+              const mins = parseInt(parts[0], 10);
+              const secs = parseInt(parts[1], 10);
+        
+              if (!isNaN(mins) && !isNaN(secs) && mins >= 0 && secs >= 0 && secs < 60) {
+                remainingTime = mins * 60 + secs;
+                initialTime = remainingTime;
+                updateDisplay();
+              } else {
+                alert('Invalid time format. Please use MM:SS.');
+                updateDisplay();
+              }
+            } else {
+              alert('Invalid time format. Please use MM:SS.');
+              updateDisplay();
+            }
+          });
+        
+          timerDisplay.addEventListener('keypress', (e) => {
+            if (!/[0-9:]/.test(e.key)) {
+              e.preventDefault();
+            }
+          });
+        
+          updateDisplay();
+        </script>
+        
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  </body>
+</html>
